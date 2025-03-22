@@ -11,29 +11,26 @@ async function deblur(apiKey) {
             }
         });
 
-        //console.log(response) // Log para verificar respostas
+        //console.log(response) //Log para verificar respostas
+        /* 
+        Ao buscar os dados de matches, tudo que a API retorna, de útil, acaba sendo somente foto, dade, e id, por conta disso, até o presente momento não encontrei meios de retornar também o nome do outro usuário. Caso encontrem formas de fazer isso, por favor, abra uma PR com indicativos, e farei a inserção dentro desse trecho. Por enquanto, trabalhamos somente com as fotos, e dados relevantes.
+        */
 
-        const teasers = response.data.data.results;
+        const teasers = response.data?.data?.results || [];
 
-        const responseData = [];
+        console.debug(teasers);
 
-        // armazenado dados
-        teasers.forEach(teasers => {
-            const matches = teasers.user
+        const responseData = teasers.map(teasers => {
+            const matches = teasers.user;
 
-            //console.log(matches); // Log para verificar respostas
-
-            const matchesData = {
+            return {
                 id: matches._id || null,
                 active: matches.recently_active || null,
                 name: matches.name || matches.name_length || null,
                 birthday: matches.birth_date || null,
-                relationship: matches.relationship_intent.body_text || null,
-                photos: matches.photos[0].url || null,
-            }
-
-            responseData.push(matchesData);
-            //console.log(matchesData); // Log para verificar respostas
+                relationship: matches.relationship_intent?.body_text || null,
+                photos: matches.photos?.[0]?.url || null,
+            };
         });
 
         // return teasers;
